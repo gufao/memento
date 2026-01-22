@@ -4,9 +4,9 @@ directories:
   output: dist
   buildResources: resources
 files:
+  - "!**/*"
   - out
   - package.json
-  - "!**/*"
 extraResources:
   - from: resources/binaries/${os}
     to: binaries
