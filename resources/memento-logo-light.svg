@@ -1,0 +1,20 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Light mode background -->
+  <rect width="512" height="512" rx="96" fill="#F8FAFC"/>
+
+  <!-- Polaroid Frame -->
+  <rect x="96" y="72" width="320" height="368" rx="16" fill="#334155"/>
+
+  <!-- Photo Area -->
+  <rect x="120" y="96" width="272" height="248" rx="8" fill="#1E293B"/>
+
+  <!-- Play Button -->
+  <path d="M224 172L304 220L224 268V172Z" fill="#10B981"/>
+
+  <!-- Subtle shine on play button -->
+  <path d="M224 172L264 196L224 220V172Z" fill="#34D399" fill-opacity="0.4"/>
+
+  <!-- Bottom polaroid strip texture -->
+  <line x1="140" y1="380" x2="180" y2="380" stroke="#475569" stroke-width="2" stroke-linecap="round"/>
+  <line x1="200" y1="380" x2="280" y2="380" stroke="#475569" stroke-width="2" stroke-linecap="round"/>
+</svg>

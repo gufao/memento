@@ -1,0 +1,13 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Compact version for favicon/tray -->
+  <rect width="64" height="64" rx="12" fill="#0F172A"/>
+
+  <!-- Simplified Polaroid -->
+  <rect x="12" y="9" width="40" height="46" rx="4" fill="#F8FAFC"/>
+
+  <!-- Photo Area -->
+  <rect x="15" y="12" width="34" height="31" rx="2" fill="#1E293B"/>
+
+  <!-- Play Button (simplified) -->
+  <path d="M28 21L38 27.5L28 34V21Z" fill="#10B981"/>
+</svg>

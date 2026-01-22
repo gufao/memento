@@ -1,0 +1,12 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Monochrome version (white on transparent) -->
+
+  <!-- Polaroid Frame -->
+  <rect x="96" y="72" width="320" height="368" rx="16" fill="white"/>
+
+  <!-- Photo Area -->
+  <rect x="120" y="96" width="272" height="248" rx="8" fill="#1E293B"/>
+
+  <!-- Play Button -->
+  <path d="M224 172L304 220L224 268V172Z" fill="white"/>
+</svg>
