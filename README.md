@@ -85,3 +85,15 @@ npm run build:linux
 ## License
 
 MIT
+
+## Troubleshooting
+
+### macOS: "App is damaged and can't be opened"
+
+This occurs because the app is not signed with an Apple Developer Certificate. To fix it:
+
+1.  Move `Memento.app` to your `/Applications` folder.
+2.  Open Terminal and run:
+    ```bash
+    sudo xattr -cr /Applications/Memento.app
+    ```
