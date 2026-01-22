@@ -4,7 +4,6 @@ directories:
   output: dist
   buildResources: resources
 files:
-  - "!**/*"
   - out
   - package.json
 extraResources:
