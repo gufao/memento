@@ -1,8 +1,10 @@
 import { useState, useRef } from 'react'
 import { Button } from '@heroui/react'
 import { Download, Link as LinkIcon, ArrowRight } from 'lucide-react'
+import { useI18n } from '../contexts/I18nContext'
 
 export const UrlInput = () => {
+  const { t } = useI18n()
   const [url, setUrl] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isFocused, setIsFocused] = useState(false)
@@ -48,7 +50,7 @@ export const UrlInput = () => {
           <input
             ref={inputRef}
             type="url"
-            placeholder="Paste YouTube URL here..."
+            placeholder={t('urlInput.placeholder')}
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             onFocus={() => setIsFocused(true)}
@@ -70,11 +72,11 @@ export const UrlInput = () => {
             `}
           >
             {isLoading ? (
-              <span>Fetching...</span>
+              <span>{t('urlInput.fetching')}</span>
             ) : (
               <span className="flex items-center gap-2">
                 <Download className="w-4 h-4" />
-                <span className="hidden sm:inline">Download</span>
+                <span className="hidden sm:inline">{t('urlInput.download')}</span>
                 <ArrowRight className="w-3.5 h-3.5 sm:hidden" />
               </span>
             )}
@@ -84,7 +86,7 @@ export const UrlInput = () => {
 
       {/* Helper text */}
       <p className="text-center text-xs text-slate-400 dark:text-slate-500 mt-3">
-        Supports YouTube videos, shorts, and playlists
+        {t('urlInput.helperText')}
       </p>
     </div>
   )

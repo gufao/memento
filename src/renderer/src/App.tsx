@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { UrlInput } from './components/UrlInput'
 import { DownloadQueue } from './components/DownloadQueue'
-import { Sparkles, Sun, Moon } from 'lucide-react'
-import { Button } from '@heroui/react'
+import { Sparkles, Sun, Moon, Languages } from 'lucide-react'
+import { Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@heroui/react'
+import { useI18n } from './contexts/I18nContext'
 
 function App(): JSX.Element {
+  const { t, locale, setLocale } = useI18n()
   const [isDark, setIsDark] = useState(() => {
     const saved = localStorage.getItem('theme')
     return saved ? saved === 'dark' : true
@@ -30,7 +32,7 @@ function App(): JSX.Element {
       {/* Header */}
       <header className="relative h-12 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 flex items-center justify-between px-4 draggable">
         {/* Spacer for centering */}
-        <div className="w-8" />
+        <div className="w-20" /> {/* Increased width to balance right side */}
 
         {/* Logo - centered */}
         <div className="flex items-center gap-2.5">
@@ -46,20 +48,44 @@ function App(): JSX.Element {
             </svg>
           </div>
           <span className="font-bold text-base tracking-tight text-slate-800 dark:text-white">
-            Memento
+            {t('app.title')}
           </span>
         </div>
 
-        {/* Theme toggle */}
-        <Button
-          isIconOnly
-          size="sm"
-          variant="light"
-          onPress={() => setIsDark(!isDark)}
-          className="non-draggable w-8 h-8 min-w-0 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
-        >
-          {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-        </Button>
+        {/* Actions */}
+        <div className="flex items-center gap-1 non-draggable">
+          <Dropdown>
+            <DropdownTrigger>
+              <Button
+                isIconOnly
+                size="sm"
+                variant="light"
+                className="w-8 h-8 min-w-0 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
+              >
+                <Languages className="w-4 h-4" />
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu 
+              aria-label="Language" 
+              onAction={(key) => setLocale(key as any)}
+              selectedKeys={new Set([locale])}
+              selectionMode="single"
+            >
+              <DropdownItem key="en">English</DropdownItem>
+              <DropdownItem key="pt-BR">Português (Brasil)</DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+
+          <Button
+            isIconOnly
+            size="sm"
+            variant="light"
+            onPress={() => setIsDark(!isDark)}
+            className="w-8 h-8 min-w-0 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
+          >
+            {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          </Button>
+        </div>
       </header>
 
       {/* Main content */}
@@ -70,14 +96,14 @@ function App(): JSX.Element {
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100/80 dark:bg-emerald-900/30 border border-emerald-200/50 dark:border-emerald-800/50">
               <Sparkles className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
               <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">
-                Fast & Simple
+                {t('app.fastSimple')}
               </span>
             </div>
             <h1 className="text-2xl font-extrabold text-slate-800 dark:text-white tracking-tight">
-              Download YouTube Videos
+              {t('app.heroTitle')}
             </h1>
             <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
-              Paste any YouTube link below and save videos to your computer instantly
+              {t('app.heroSubtitle')}
             </p>
           </div>
 

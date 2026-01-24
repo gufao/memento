@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Button, Tooltip } from '@heroui/react'
-import { FolderOpen, CheckCircle2, Loader2, Music, Video } from 'lucide-react'
+import { FolderOpen, CheckCircle2, Loader2, Video } from 'lucide-react'
+import { useI18n } from '../contexts/I18nContext'
 
 interface DownloadItem {
   id: string
@@ -12,6 +13,7 @@ interface DownloadItem {
 }
 
 export const DownloadQueue = () => {
+  const { t } = useI18n()
   const [downloads, setDownloads] = useState<DownloadItem[]>([])
 
   useEffect(() => {
@@ -23,7 +25,7 @@ export const DownloadQueue = () => {
              id: data.id,
              progress: data.progress,
              status: 'downloading',
-             title: data.title || 'Fetching info...',
+             title: data.title || t('downloadQueue.fetchingInfo'),
              url: data.url
            }]
         }
@@ -52,7 +54,7 @@ export const DownloadQueue = () => {
       unsubProgress()
       unsubComplete()
     }
-  }, [])
+  }, [t])
 
   if (downloads.length === 0) return null
 
@@ -64,7 +66,7 @@ export const DownloadQueue = () => {
           <Video className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
         </div>
         <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-          Downloads
+          {t('downloadQueue.title')}
         </h3>
         <span className="text-xs font-medium text-slate-400 dark:text-slate-500">
           ({downloads.length})
@@ -130,10 +132,10 @@ export const DownloadQueue = () => {
                       <div className="flex items-center gap-2">
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400">
                           <CheckCircle2 className="w-3 h-3" />
-                          Done
+                          {t('downloadQueue.done')}
                         </span>
                         {item.filePath && (
-                          <Tooltip content="Show in Folder" placement="left">
+                          <Tooltip content={t('downloadQueue.showInFolder')} placement="left">
                             <Button
                               isIconOnly
                               size="sm"

@@ -1,6 +1,6 @@
 {
   "name": "memento",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "Memento Team",
   "description": "YouTube video downloader built with Electron, React, HeroUI, and yt-dlp",
   "main": "out/main/index.js",
