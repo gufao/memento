@@ -1,6 +1,6 @@
 [package]
 name = "memento"
-version = "2.0.0"
+version = "2.1.0"
 description = "YouTube video downloader built with Tauri, React, HeroUI, and yt-dlp"
 authors = ["Memento Team"]
 edition = "2021"
