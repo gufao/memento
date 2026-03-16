@@ -1,6 +1,8 @@
 node_modules
-out
 dist
+dist-frontend
 resources/binaries
+src-tauri/resources/binaries
+src-tauri/target
 .DS_Store
 .env

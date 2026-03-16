@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { Button, Tooltip } from '@heroui/react'
 import { FolderOpen, CheckCircle2, Loader2, Video } from 'lucide-react'
 import { useI18n } from '../contexts/I18nContext'
+import { listen, type UnlistenFn } from '@tauri-apps/api/event'
+import { invoke } from '@tauri-apps/api/core'
 
 interface DownloadItem {
   id: string
@@ -12,12 +14,30 @@ interface DownloadItem {
   filePath?: string
 }
 
+interface ProgressPayload {
+  id: string
+  progress: number
+  title: string
+  url: string
+}
+
+interface CompletePayload {
+  id: string
+  filePath: string
+}
+
 export const DownloadQueue = () => {
   const { t } = useI18n()
   const [downloads, setDownloads] = useState<DownloadItem[]>([])
 
   useEffect(() => {
-    const unsubProgress = window.api.download.onProgress((data) => {
+    const unlisteners: UnlistenFn[] = []
+
+    console.log('[DownloadQueue] Setting up event listeners...')
+
+    listen<ProgressPayload>('download:progress', (event) => {
+      console.log('[DownloadQueue] Progress event:', event.payload)
+      const data = event.payload
       setDownloads(prev => {
         const idx = prev.findIndex(d => d.id === data.id)
         if (idx === -1) {
@@ -37,10 +57,15 @@ export const DownloadQueue = () => {
         }
         return newArr
       })
+    }).then(fn => {
+      console.log('[DownloadQueue] Progress listener registered')
+      unlisteners.push(fn)
     })
 
-    const unsubComplete = window.api.download.onComplete((data) => {
-       setDownloads(prev => {
+    listen<CompletePayload>('download:complete', (event) => {
+      console.log('[DownloadQueue] Complete event:', event.payload)
+      const data = event.payload
+      setDownloads(prev => {
          return prev.map(d => d.id === data.id ? {
            ...d,
            progress: 100,
@@ -48,11 +73,18 @@ export const DownloadQueue = () => {
            filePath: data.filePath
          } : d)
        })
-    })
+    }).then(fn => unlisteners.push(fn))
+
+    listen<{ id: string; error: string }>('download:error', (event) => {
+      console.error('[DownloadQueue] Error event:', event.payload)
+      const data = event.payload
+      setDownloads(prev =>
+        prev.map(d => d.id === data.id ? { ...d, status: 'error' as const, title: `Error: ${data.error}` } : d)
+      )
+    }).then(fn => unlisteners.push(fn))
 
     return () => {
-      unsubProgress()
-      unsubComplete()
+      unlisteners.forEach(fn => fn())
     }
   }, [t])
 
@@ -140,7 +172,7 @@ export const DownloadQueue = () => {
                               isIconOnly
                               size="sm"
                               variant="flat"
-                              onPress={() => window.api.download.showInFolder(item.filePath!)}
+                              onPress={() => invoke('show_in_folder', { path: item.filePath! })}
                               className="bg-slate-100 dark:bg-slate-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 text-slate-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
                             >
                               <FolderOpen className="w-4 h-4" />

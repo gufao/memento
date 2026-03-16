@@ -30,7 +30,7 @@ function App(): JSX.Element {
       </div>
 
       {/* Header */}
-      <header className="relative h-12 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 flex items-center justify-between px-4 draggable">
+      <header data-tauri-drag-region className="relative h-12 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 flex items-center justify-between px-4 draggable">
         {/* Spacer for centering */}
         <div className="w-20" /> {/* Increased width to balance right side */}
 

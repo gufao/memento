@@ -2,6 +2,7 @@ import { useState, useRef } from 'react'
 import { Button } from '@heroui/react'
 import { Download, Link as LinkIcon, ArrowRight } from 'lucide-react'
 import { useI18n } from '../contexts/I18nContext'
+import { invoke } from '@tauri-apps/api/core'
 
 export const UrlInput = () => {
   const { t } = useI18n()
@@ -14,7 +15,7 @@ export const UrlInput = () => {
     if (!url) return
     setIsLoading(true)
     try {
-      await window.api.download.start(url, {})
+      await invoke('download_start', { url, options: {} })
       setUrl('')
     } catch (e) {
       console.error(e)

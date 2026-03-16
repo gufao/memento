@@ -51,6 +51,11 @@ body {
   -webkit-app-region: no-drag;
 }
 
+/* Tauri drag region support */
+[data-tauri-drag-region] {
+  -webkit-app-region: drag;
+}
+
 /* Glowing accent */
 .glow {
   box-shadow: 0 0 60px -15px rgba(16, 185, 129, 0.4);
