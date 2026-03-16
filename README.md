@@ -3,14 +3,14 @@
 <div align="center">
   <img src="resources/icon.png" alt="Memento Logo" width="128" height="128" />
   <h3>Modern YouTube Video Downloader</h3>
-  <p>Built with Electron, React, HeroUI, and yt-dlp.</p>
+  <p>Built with Tauri, React, HeroUI, and yt-dlp.</p>
 </div>
 
 ---
 
 ## About
 
-Memento is a sleek and powerful desktop application designed to make downloading YouTube videos simple and efficient. Built on a modern tech stack, it combines the performance of Electron with the beautiful UI components of HeroUI and the robust downloading capabilities of `yt-dlp`.
+Memento is a sleek and powerful desktop application designed to make downloading YouTube videos simple and efficient. Built with Tauri v2 and Rust for a lightweight, fast native experience, combined with the beautiful UI components of HeroUI and the robust downloading capabilities of `yt-dlp`.
 
 Whether you need to archive content for offline viewing, save educational materials, or keep a personal collection of your favorite creators, Memento provides a seamless experience across macOS, Windows, and Linux.
 
@@ -20,21 +20,24 @@ Whether you need to archive content for offline viewing, save educational materi
 -   **Cross-Platform**: Native support for macOS, Windows, and Linux.
 -   **High-Quality Downloads**: Leveraging `yt-dlp` for reliable video extraction.
 -   **Queue Management**: Track your download progress in real-time.
--   **Smart URL Detection**: automatically validates YouTube links.
+-   **Smart URL Detection**: Automatically validates YouTube links.
+-   **Auto-Update yt-dlp**: Checks for the latest yt-dlp version on startup and updates automatically.
+-   **Lightweight**: ~15MB bundle size thanks to Tauri (vs ~150MB with Electron).
 
 ## Installation
 
 Download the latest release for your operating system from the [Releases](https://github.com/gufao/memento/releases) page.
 
 -   **macOS**: Download `.dmg`
--   **Windows**: Download `.exe`
--   **Linux**: Download `.AppImage`
+-   **Windows**: Download `.msi` or `.exe`
+-   **Linux**: Download `.AppImage` or `.deb`
 
 ## Development
 
 ### Prerequisites
 
--   Node.js (v18 or higher)
+-   [Node.js](https://nodejs.org/) (v18 or higher)
+-   [Rust](https://rustup.rs/) (latest stable)
 -   npm
 
 ### Setup
@@ -51,8 +54,8 @@ Download the latest release for your operating system from the [Releases](https:
     ```
 
 3.  **Binaries**:
-    Ensure `yt-dlp` and `ffmpeg` binaries are present in `resources/binaries/<platform>/`.
-    *(Note: The repository structure assumes these exist. You might need to download them manually if building from source without the resources folder)*
+    Ensure `yt-dlp` and `ffmpeg` binaries are present in `resources/binaries/<platform>/`
+    (`mac`, `win`, or `linux`).
 
 4.  Run in development mode:
     ```bash
@@ -76,7 +79,7 @@ npm run build:linux
 
 ## Technologies
 
--   [Electron](https://www.electronjs.org/)
+-   [Tauri v2](https://v2.tauri.app/) — lightweight native app framework
 -   [React](https://reactjs.org/)
 -   [HeroUI](https://heroui.com/)
 -   [Tailwind CSS](https://tailwindcss.com/)
