@@ -82,6 +82,18 @@ jobs:
           cp $(which ffmpeg) resources/binaries/linux/ffmpeg
           chmod +x resources/binaries/linux/ffmpeg
 
+      - name: Generate proper icon.ico (Windows)
+        if: matrix.platform == 'windows-latest'
+        shell: pwsh
+        run: |
+          pip install Pillow --quiet
+          python -c @"
+          from PIL import Image
+          img = Image.open('resources/icon.png')
+          img.save('src-tauri/icons/icon.ico', format='ICO', sizes=[(256,256),(128,128),(64,64),(48,48),(32,32),(16,16)])
+          print('icon.ico generated')
+          "@
+
       - name: Download yt-dlp (Windows)
         if: matrix.platform == 'windows-latest'
         shell: pwsh
