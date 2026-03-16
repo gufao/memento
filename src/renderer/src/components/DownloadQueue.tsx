@@ -4,6 +4,7 @@ import { FolderOpen, CheckCircle2, Loader2, Video } from 'lucide-react'
 import { useI18n } from '../contexts/I18nContext'
 import { listen, type UnlistenFn } from '@tauri-apps/api/event'
 import { invoke } from '@tauri-apps/api/core'
+import { bro } from '../lib/analytics'
 
 interface DownloadItem {
   id: string
@@ -65,6 +66,7 @@ export const DownloadQueue = () => {
     listen<CompletePayload>('download:complete', (event) => {
       console.log('[DownloadQueue] Complete event:', event.payload)
       const data = event.payload
+      bro.track('download_completed', { filePath: data.filePath })
       setDownloads(prev => {
          return prev.map(d => d.id === data.id ? {
            ...d,
@@ -78,6 +80,7 @@ export const DownloadQueue = () => {
     listen<{ id: string; error: string }>('download:error', (event) => {
       console.error('[DownloadQueue] Error event:', event.payload)
       const data = event.payload
+      bro.track('download_failed', { error: data.error })
       setDownloads(prev =>
         prev.map(d => d.id === data.id ? { ...d, status: 'error' as const, title: `Error: ${data.error}` } : d)
       )

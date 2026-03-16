@@ -4,6 +4,7 @@ import { HeroUIProvider } from '@heroui/react'
 import { I18nProvider } from './contexts/I18nContext'
 import App from './App'
 import './styles/globals.css'
+import './lib/analytics'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>

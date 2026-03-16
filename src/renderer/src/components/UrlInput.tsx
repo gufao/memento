@@ -3,6 +3,7 @@ import { Button } from '@heroui/react'
 import { Download, Link as LinkIcon, ArrowRight } from 'lucide-react'
 import { useI18n } from '../contexts/I18nContext'
 import { invoke } from '@tauri-apps/api/core'
+import { bro } from '../lib/analytics'
 
 export const UrlInput = () => {
   const { t } = useI18n()
@@ -16,8 +17,10 @@ export const UrlInput = () => {
     setIsLoading(true)
     try {
       await invoke('download_start', { url, options: {} })
+      bro.track('download_started', { url })
       setUrl('')
     } catch (e) {
+      bro.track('download_error', { url, error: String(e) })
       console.error(e)
     } finally {
       setIsLoading(false)
