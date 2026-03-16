@@ -1,0 +1,123 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macos-latest
+            target: aarch64-apple-darwin
+            label: macOS-arm64
+          - platform: macos-latest
+            target: x86_64-apple-darwin
+            label: macOS-x64
+          - platform: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+            label: Linux-x64
+          - platform: windows-latest
+            target: x86_64-pc-windows-msvc
+            label: Windows-x64
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Install Linux dependencies
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            patchelf
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Download yt-dlp (macOS)
+        if: startsWith(matrix.platform, 'macos')
+        run: |
+          mkdir -p resources/binaries/mac
+          curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos -o resources/binaries/mac/yt-dlp
+          chmod +x resources/binaries/mac/yt-dlp
+
+      - name: Download ffmpeg (macOS)
+        if: startsWith(matrix.platform, 'macos')
+        run: |
+          curl -L https://evermeet.cx/ffmpeg/ffmpeg-7.1.1.zip -o /tmp/ffmpeg.zip
+          unzip /tmp/ffmpeg.zip -d resources/binaries/mac/
+          chmod +x resources/binaries/mac/ffmpeg
+
+      - name: Download yt-dlp (Linux)
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          mkdir -p resources/binaries/linux
+          curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux -o resources/binaries/linux/yt-dlp
+          chmod +x resources/binaries/linux/yt-dlp
+
+      - name: Download ffmpeg (Linux)
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get install -y ffmpeg
+          cp $(which ffmpeg) resources/binaries/linux/ffmpeg
+          chmod +x resources/binaries/linux/ffmpeg
+
+      - name: Download yt-dlp (Windows)
+        if: matrix.platform == 'windows-latest'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path resources/binaries/win
+          Invoke-WebRequest -Uri "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe" -OutFile "resources/binaries/win/yt-dlp.exe"
+
+      - name: Download ffmpeg (Windows)
+        if: matrix.platform == 'windows-latest'
+        shell: pwsh
+        run: |
+          Invoke-WebRequest -Uri "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip" -OutFile "$env:TEMP/ffmpeg.zip"
+          Expand-Archive -Path "$env:TEMP/ffmpeg.zip" -DestinationPath "$env:TEMP/ffmpeg"
+          $ffmpegExe = Get-ChildItem -Path "$env:TEMP/ffmpeg" -Recurse -Filter "ffmpeg.exe" | Select-Object -First 1
+          Copy-Item $ffmpegExe.FullName -Destination "resources/binaries/win/ffmpeg.exe"
+
+      - name: Copy binaries to Tauri resources
+        shell: bash
+        run: |
+          mkdir -p src-tauri/resources/binaries
+          if [ "${{ matrix.platform }}" = "windows-latest" ]; then
+            cp resources/binaries/win/* src-tauri/resources/binaries/
+          elif [ "${{ matrix.platform }}" = "ubuntu-22.04" ]; then
+            cp resources/binaries/linux/* src-tauri/resources/binaries/
+          else
+            cp resources/binaries/mac/* src-tauri/resources/binaries/
+          fi
+
+      - name: Build Tauri app
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: ${{ github.ref_name }}
+          releaseBody: 'See [CHANGELOG](https://github.com/gufao/memento/compare/v1.1.0...${{ github.ref_name }}) for details.'
+          releaseDraft: false
+          prerelease: false
+          args: --target ${{ matrix.target }}
